@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+
+<head>
+    <meta charset="UTF-8">
+    <title>我的导航</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+    <header></header>
+
+    <main>
+        <div class="wrapper" id="main"></div>
+    </main>
+    <footer></footer>
+    <script>
+        //1.初始化数据
+        var keys = {
+            '0': ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p'],
+            '1': ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l'],
+            '2': ['z', 'x', 'c', 'v', 'b', 'n', 'm'],
+            'length': 3
+        }
+        var hash = {
+            q: 'qq.com',
+            w: 'weibo.com',
+            y: 'youku.com',
+            b: 'bilibili.com',
+            t: 'tencent.com'
+        }
+        var hashInLocalStorage = getFromLocalstotage('zzz')
+        if (hashInLocalStorage) {
+            hash = hashInLocalStorage
+        }
+       
+        // 2.生成键盘
+        for (var index=0; index < keys['length']; index++) {
+            var div = Tag('div',{className:'row'})
+
+            var row = keys[index]
+            main.appendChild(div)
+
+            for (var index2=0; index2 < row['length']; index2++) {
+                var kbd = Tag('kbd',{className:'key'})
+
+                var span = Tag('span',{className:'text'})
+                span.textContent = row[index2]
+                kbd.appendChild(span)
+                
+                var button = Tag('button')
+                button.textContent = '编辑'
+                button.id = row[index2]
+                var img = Tag('img')
+                if (hash[row[index2]]) {
+                    img.src = 'http://' + hash[row[index2]] + '/favicon.ico'
+                } else {
+                    img.src = '//i.loli.net/2019/09/05/oXZ8jWkMisIHOAG.png'
+                }
+                img.onerror = function (xx) {
+                    xx.target.src = '//i.loli.net/2019/09/05/oXZ8jWkMisIHOAG.png'
+                }
+                button.onclick = function (dddf) {
+                    var button2 = dddf['target']
+                    var img2 = button2.previousSibling
+                    var key = button2['id']
+                    var x = prompt('填一个网址')
+                    hash[key] = x
+                    img2.src = 'http://' + x + '/favicon.ico'
+                    img.onerror = function (xx) {
+                    xx.target.src = '//i.loli.net/2019/09/05/oXZ8jWkMisIHOAG.png'
+                }
+                    localStorage.setItem('zzz', JSON.stringify(hash))
+                    console.log(hash)
+
+                }
+                kbd.appendChild(img)
+                kbd.appendChild(button)
+                div.appendChild(kbd)
+            }
+        }
+
+            //3.监听键盘
+            document.onkeypress = function (dddf) {
+                var key = dddf['key']
+                var website = hash[key]
+                //location.href = 'http://'+website
+                window.open('http://' + website, '_blank')
+            }
+        
+
+
+
+        function getFromLocalstotage(name){
+            return  JSON.parse(localStorage.getItem(name) || 'null')
+        }
+        function Tag(TagName,attributes){
+            var Element = document.createElement(TagName)
+            for(var key in attributes){
+                Element[key] = attributes[key]
+            }
+            return Element
+        }
+    </script>
+</body>
+
+</html>
